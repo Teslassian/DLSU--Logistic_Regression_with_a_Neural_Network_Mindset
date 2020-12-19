@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import h5py
 import scipy
+import scipy.misc
+# import imageio as iio
 from PIL import Image
 from scipy import ndimage
 from lr_utils import load_dataset
@@ -28,6 +30,24 @@ test_set_x_flatten = test_set_x_orig.reshape(test_set_x_orig.shape[0], -1).T
 # Normalize the data
 train_set_x = train_set_x_flatten/255
 test_set_x = test_set_x_flatten/255
+
+# Variables and their sizes/values
+print("Matrices:\n")
+print("train_set_x_orig: " + str(train_set_x_orig.shape) + "\n")
+print("train_set_x: " + str(train_set_x.shape) + "\n")
+print("train_set_x_flatten: " + str(train_set_x_flatten.shape) + "\n")
+print("train_set_y: " + str(train_set_y.shape) + "\n")
+print("test_set_x_orig: " + str(test_set_x_orig.shape) + "\n")
+print("test_set_x: " + str(test_set_x.shape) + "\n")
+print("test_set_x_flatten: " + str(test_set_x_flatten.shape) + "\n")
+print("test_set_y: " + str(test_set_y.shape) + "\n")
+print("\n")
+
+print("Variables:\n")
+print("m_train: " + str(m_train) + "\n")
+print("m_test: " + str(m_test) + "\n")
+print("num_px: " + str(num_px) + "\n")
+print("\n")
 
 # Function to calculate the sigmoid function
 def sigmoid(z):
@@ -66,11 +86,11 @@ def initialize_with_zeros(dim):
     assert(isinstance(b, float) or isinstance(b, int))
 
     return w,b
-# Initialize w, b.
-dim = 2
-w,b = initialize_with_zeros(dim)
-print("w = " + str(w))
-print("b = " + str(b))
+# # Test the initialize_with_zeros function
+# dim = 2
+# w,b = initialize_with_zeros(dim)
+# print("w = " + str(w))
+# print("b = " + str(b))
 
 # Function for forward and backward propagation
 def propagate(w, b, X, Y):
@@ -111,15 +131,15 @@ def propagate(w, b, X, Y):
              "db":db}
 
     return grads, cost
-# Initialize w, b, X, Y. Calculate grads (dw and db) and cost.
-w, b, X, Y = np.array([[1.],[2.]]), 2., np.array([[1.,2.,-1.],[3.,4.,-3.2]]), np.array([[1,0,1]])
-grads, cost = propagate(w, b, X, Y)
-print("dw = " + str(grads["dw"]))
-print("db = " + str(grads["db"]))
-print("cost = " + str(cost))
+# # Test the propagate function - initialize w, b, X, Y. Calculate grads (dw and db) and cost.
+# w, b, X, Y = np.array([[1.],[2.]]), 2., np.array([[1.,2.,-1.],[3.,4.,-3.2]]), np.array([[1,0,1]])
+# grads, cost = propagate(w, b, X, Y)
+# print("dw = " + str(grads["dw"]))
+# print("db = " + str(grads["db"]))
+# print("cost = " + str(cost))
 
 # Function for optimization
-def optimize(w, b, X, Y, num_iterations, learning_rate, print_cost = False):
+def optimize(w, b, X, Y, num_iterations, learning_rate, print_cost):
     """
     This function optimizes w and b by running a gradient descent algorithm
 
@@ -172,14 +192,14 @@ def optimize(w, b, X, Y, num_iterations, learning_rate, print_cost = False):
              "db": db}
 
     return params, grads, costs
-# Optimize w, b, dw, db.
-params, grads, costs = optimize(w, b, X, Y, num_iterations=100, learning_rate = 0.009, print_cost=False)
-print("w = " + str(params["w"]))
-print("b = " + str(params["b"]))
-print("dw = " + str(grads["dw"]))
-print("db = " + str(grads["db"]))
+# # Test the optimize function - optimize w, b, dw, db.
+# params, grads, costs = optimize(w, b, X, Y, num_iterations=100, learning_rate = 0.009, print_cost=False)
+# print("w = " + str(params["w"]))
+# print("b = " + str(params["b"]))
+# print("dw = " + str(grads["dw"]))
+# print("db = " + str(grads["db"]))
 
-#Function for prediction
+# Function for prediction
 def predict(w, b, X):
     '''
     Predict whether the label is 0 or 1 using learned logistic regression parameters (w, b)
@@ -205,36 +225,104 @@ def predict(w, b, X):
     assert(Y_prediction.shape == (1,m))
 
     return Y_prediction
-# Predict the outputs
-w = np.array([[0.1124579],[0.23106775]])
-b = -0.3
-X = np.array([[1.,-1.1,-3.2],[1.2,2.,0.1]])
-print("predictions = " + str(predict(w, b, X)))
+# # Test the predict function - predict the outputs
+# w = np.array([[0.1124579],[0.23106775]])
+# b = -0.3
+# X = np.array([[1.,-1.1,-3.2],[1.2,2.,0.1]])
+# print("predictions = " + str(predict(w, b, X)))
 
+# Function to merge all functions into a model
+def model(X_train, Y_train, X_test, Y_test, num_iterations=2000, learning_rate=0.5, print_cost=False):
+    """
+    Builds the logistic regression model by calling the function you've implemented previously
 
+    Arguments:
+    X_train -- training set represented by a numpy array of shape (num_px * num_px * 3, m_train)
+    Y_train -- training labels represented by a numpy array (vector) of shape (1, m_train)
+    X_test -- test set represented by a numpy array of shape (num_px * num_px * 3, m_test)
+    Y_test -- test labels represented by a numpy array (vector) of shape (1, m_test)
+    num_iterations -- hyperparameter representing the number of iterations to optimize the parameters
+    learning_rate -- hyperparameter representing the learning rate used in the update rule of optimize()
+    print_cost -- Set to true to print the cost every 100 iterations
 
+    Returns:
+    d -- dictionary containing information about the model.
+    """
 
+    # Parameter initialization
+    w, b = initialize_with_zeros(X_test.shape[0])
 
+    # Gradient descent
+    parameters, grads, costs = optimize(w, b, X_train, Y_train, num_iterations, learning_rate, print_cost)
 
+    # Retrieve parameters w and b from dictionary 'parameters'
+    w = parameters["w"]
+    b = parameters["b"]
 
+    # Predict the test/train examples
+    Y_prediction_train = predict(w, b, X_train)
+    Y_prediction_test = predict(w, b, X_test)
 
+    # Print train/test Errors
+    print("train accuracy: {} %".format(100 - np.mean(np.abs(Y_prediction_train - Y_train)) * 100))
+    print("test accuracy: {} %".format(100 - np.mean(np.abs(Y_prediction_test - Y_test)) * 100))
 
-# Variables and their sizes/values
-print("Matrices:\n\n")
-print("train_set_x_orig: " + str(train_set_x_orig.shape) + "\n")
-print("train_set_x: " + str(train_set_x.shape) + "\n")
-print("train_set_x_flatten: " + str(train_set_x_flatten.shape) + "\n")
-print("train_set_y: " + str(train_set_y.shape) + "\n")
-print("\n")
+    # Setting the dictionary
+    d = {"costs": costs,
+        "Y_prediction_train": Y_prediction_test,
+        "Y_prediction_test": Y_prediction_test,
+        "w": w,
+        "b": b,
+        "learning_rate": learning_rate,
+        "num_iterations": num_iterations}
 
-print("test_set_x_orig: " + str(test_set_x_orig.shape) + "\n")
-print("test_set_x: " + str(test_set_x.shape) + "\n")
-print("test_set_x_flatten: " + str(test_set_x_flatten.shape) + "\n")
-print("test_set_y: " + str(test_set_y.shape) + "\n")
-print("\n")
+    return d
+# Running the model
+d = model(train_set_x, train_set_y, test_set_x, test_set_y, num_iterations=2000, learning_rate=0.005, print_cost=True)
 
-print("Variables:\n\n")
-print("m_train: " + str(m_train) + "\n")
-print("m_test: " + str(m_test) + "\n")
-print("num_px: " + str(num_px) + "\n")
-print("\n")
+# # Example of a picture that was wrongly classified.
+# index = 1
+# plt.imshow(test_set_x[:,index].reshape((num_px, num_px, 3)))
+# print ("y = " + str(test_set_y[0,index]) + ", you predicted that it is a \"" + classes[d["Y_prediction_test"][0,index]].decode("utf-8") +  "\" picture.")
+
+# Plot of the learning curve with costs
+costs = np.squeeze(d['costs'])
+plt.plot(costs)
+plt.ylabel('cost')
+plt.xlabel('iterations (per hundreds)')
+plt.title("Learning rate =" + str(d["learning_rate"]))
+plt.show()
+
+# Variation of the learning rate to show the effect thereof on the classification accuracy and training speed
+learning_rates = [0.01, 0.001, 0.0001]
+models = {}
+for i in learning_rates:
+    print ("learning rate is: " + str(i))
+    models[str(i)] = model(train_set_x, train_set_y, test_set_x, test_set_y, num_iterations = 1500, learning_rate = i, print_cost = False)
+    print ('\n' + "-------------------------------------------------------" + '\n')
+for i in learning_rates:
+    plt.plot(np.squeeze(models[str(i)]["costs"]), label= str(models[str(i)]["learning_rate"]))
+plt.ylabel('cost')
+plt.xlabel('iterations (hundreds)')
+legend = plt.legend(loc='upper center', shadow=True)
+frame = legend.get_frame()
+frame.set_facecolor('0.90')
+plt.show()
+
+# # Testing the trained model on individual images for interest's sake
+# for i in range(8):
+#     # Load the image
+#     my_image = str(i) + ".jpg"   # change this to the name of your image file
+#     # Preprocessing
+#     fname = "cats/" + my_image
+#     image = np.array(ndimage.imread(fname, flatten=False))
+#     # image = np.array(iio.imread(fname))
+#     image = image/255.
+#     my_image = scipy.misc.imresize(image, size=(num_px,num_px)).reshape((1, num_px*num_px*3)).T
+#     # my_image = (np.array(Image.fromarray(image).resize())).reshape((1, num_px*num_px*3)).T
+#     my_predicted_image = predict(d["w"], d["b"], my_image)
+#     plt.imshow(image)
+#     print("y = " + str(np.squeeze(my_predicted_image)) + ", your algorithm predicts a \"" + classes[int(np.squeeze(my_predicted_image)),].decode("utf-8") +  "\" picture.")
+#     input("Press Enter for the next image...")
+
+print("Exiting...")
