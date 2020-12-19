@@ -116,7 +116,7 @@ def propagate(w, b, X, Y):
 
     # Forward Propagation (X to Cost)
     A = sigmoid(w.T @ X + b) #1x209
-    cost = -1/m * (Y @ (np.log(A).T) + (1-Y) @ (np.log(1-A).T))
+    cost = -1/m * ((Y @ (np.log(A).T)) + ((1-Y) @ (np.log(1-A).T)))
 
     # Backward Propagation (find Grad)
     dw = 1/m * X @ ((A-Y).T)
@@ -131,12 +131,12 @@ def propagate(w, b, X, Y):
              "db":db}
 
     return grads, cost
-# # Test the propagate function - initialize w, b, X, Y. Calculate grads (dw and db) and cost.
-# w, b, X, Y = np.array([[1.],[2.]]), 2., np.array([[1.,2.,-1.],[3.,4.,-3.2]]), np.array([[1,0,1]])
-# grads, cost = propagate(w, b, X, Y)
-# print("dw = " + str(grads["dw"]))
-# print("db = " + str(grads["db"]))
-# print("cost = " + str(cost))
+# Test the propagate function - initialize w, b, X, Y. Calculate grads (dw and db) and cost.
+w, b, X, Y = np.array([[1.],[2.]]), 2., np.array([[1.,2.,-1.],[3.,4.,-3.2]]), np.array([[1,0,1]])
+grads, cost = propagate(w, b, X, Y)
+print("dw = " + str(grads["dw"]))
+print("db = " + str(grads["db"]))
+print("cost = " + str(cost))
 
 # Function for optimization
 def optimize(w, b, X, Y, num_iterations, learning_rate, print_cost):
