@@ -130,13 +130,18 @@ def propagate(w, b, X, Y):
     grads = {"dw":dw,
              "db":db}
 
+    print(cost)
+    print(dw)
+    print(db)
+    raw_input("bruh")
+
     return grads, cost
-# Test the propagate function - initialize w, b, X, Y. Calculate grads (dw and db) and cost.
-w, b, X, Y = np.array([[1.],[2.]]), 2., np.array([[1.,2.,-1.],[3.,4.,-3.2]]), np.array([[1,0,1]])
-grads, cost = propagate(w, b, X, Y)
-print("dw = " + str(grads["dw"]))
-print("db = " + str(grads["db"]))
-print("cost = " + str(cost))
+# # Test the propagate function - initialize w, b, X, Y. Calculate grads (dw and db) and cost.
+# w, b, X, Y = np.array([[1.],[2.]]), 2., np.array([[1.,2.,-1.],[3.,4.,-3.2]]), np.array([[1,0,1]])
+# grads, cost = propagate(w, b, X, Y)
+# print("dw = " + str(grads["dw"]))
+# print("db = " + str(grads["db"]))
+# print("cost = " + str(cost))
 
 # Function for optimization
 def optimize(w, b, X, Y, num_iterations, learning_rate, print_cost):
@@ -192,12 +197,12 @@ def optimize(w, b, X, Y, num_iterations, learning_rate, print_cost):
              "db": db}
 
     return params, grads, costs
-# Test the optimize function - optimize w, b, dw, db.
-params, grads, costs = optimize(w, b, X, Y, num_iterations=100, learning_rate = 0.009, print_cost=False)
-print("w = " + str(params["w"]))
-print("b = " + str(params["b"]))
-print("dw = " + str(grads["dw"]))
-print("db = " + str(grads["db"]))
+# # Test the optimize function - optimize w, b, dw, db.
+# params, grads, costs = optimize(w, b, X, Y, num_iterations=100, learning_rate = 0.009, print_cost=False)
+# print("w = " + str(params["w"]))
+# print("b = " + str(params["b"]))
+# print("dw = " + str(grads["dw"]))
+# print("db = " + str(grads["db"]))
 
 # Function for prediction
 def predict(w, b, X):
@@ -225,11 +230,11 @@ def predict(w, b, X):
     assert(Y_prediction.shape == (1,m))
 
     return Y_prediction
-# Test the predict function - predict the outputs
-w = np.array([[0.1124579],[0.23106775]])
-b = -0.3
-X = np.array([[1.,-1.1,-3.2],[1.2,2.,0.1]])
-print("predictions = " + str(predict(w, b, X)))
+# # Test the predict function - predict the outputs
+# w = np.array([[0.1124579],[0.23106775]])
+# b = -0.3
+# X = np.array([[1.,-1.1,-3.2],[1.2,2.,0.1]])
+# print("predictions = " + str(predict(w, b, X)))
 
 # Function to merge all functions into a model
 def model(X_train, Y_train, X_test, Y_test, num_iterations=2000, learning_rate=0.5, print_cost=False):
