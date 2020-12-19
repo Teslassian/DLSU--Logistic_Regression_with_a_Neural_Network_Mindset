@@ -111,7 +111,7 @@ def propagate(w, b, X, Y):
              "db":db}
 
     return grads, cost
-#Initialize w, b, X, Y. Calculate grads (dw and db) and cost.
+# Initialize w, b, X, Y. Calculate grads (dw and db) and cost.
 w, b, X, Y = np.array([[1.],[2.]]), 2., np.array([[1.,2.,-1.],[3.,4.,-3.2]]), np.array([[1,0,1]])
 grads, cost = propagate(w, b, X, Y)
 print("dw = " + str(grads["dw"]))
@@ -172,16 +172,44 @@ def optimize(w, b, X, Y, num_iterations, learning_rate, print_cost = False):
              "db": db}
 
     return params, grads, costs
-#Optimize w, b, dw, db.
+# Optimize w, b, dw, db.
 params, grads, costs = optimize(w, b, X, Y, num_iterations=100, learning_rate = 0.009, print_cost=False)
 print("w = " + str(params["w"]))
 print("b = " + str(params["b"]))
 print("dw = " + str(grads["dw"]))
 print("db = " + str(grads["db"]))
 
+#Function for prediction
+def predict(w, b, X):
+    '''
+    Predict whether the label is 0 or 1 using learned logistic regression parameters (w, b)
 
+    Arguments:
+    w -- weights, a numpy array of size (num_px * num_px * 3, 1)
+    b -- bias, a scalar
+    X -- data of size (num_px * num_px * 3, number of examples)
 
+    Returns:
+    Y_prediction -- a numpy array (vector) containing all predictions (0/1) for the examples in X
+    '''
 
+    m = X.shape[1]
+    Y_prediction = np.zeros((1,m))
+    w = w.reshape(X.shape[0], 1)
+
+    # Compute vector "A", predicting the possibility for a cat
+    A = sigmoid(w.T @ X + b)
+
+    Y_prediction = np.rint(A).astype(int) # Possibly remove the .astype(int)
+
+    assert(Y_prediction.shape == (1,m))
+
+    return Y_prediction
+# Predict the outputs
+w = np.array([[0.1124579],[0.23106775]])
+b = -0.3
+X = np.array([[1.,-1.1,-3.2],[1.2,2.,0.1]])
+print("predictions = " + str(predict(w, b, X)))
 
 
 
