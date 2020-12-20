@@ -30,22 +30,22 @@ test_set_x_flatten = test_set_x_orig.reshape(test_set_x_orig.shape[0], -1).T
 train_set_x = train_set_x_flatten/255
 test_set_x = test_set_x_flatten/255
 
-# # Variables and their sizes/values
-# print("Matrices:\n")
-# print("train_set_x_orig: " + str(train_set_x_orig.shape) + "\n")
-# print("train_set_x: " + str(train_set_x.shape) + "\n")
-# print("train_set_x_flatten: " + str(train_set_x_flatten.shape) + "\n")
-# print("train_set_y: " + str(train_set_y.shape) + "\n")
-# print("test_set_x_orig: " + str(test_set_x_orig.shape) + "\n")
-# print("test_set_x: " + str(test_set_x.shape) + "\n")
-# print("test_set_x_flatten: " + str(test_set_x_flatten.shape) + "\n")
-# print("test_set_y: " + str(test_set_y.shape) + "\n")
-# print("\n")
-# print("Variables:\n")
-# print("m_train: " + str(m_train) + "\n")
-# print("m_test: " + str(m_test) + "\n")
-# print("num_px: " + str(num_px) + "\n")
-# print("\n")
+# Variables and their sizes/values
+print("Matrices:\n")
+print("train_set_x_orig: " + str(train_set_x_orig.shape) + "\n")
+print("train_set_x: " + str(train_set_x.shape) + "\n")
+print("train_set_x_flatten: " + str(train_set_x_flatten.shape) + "\n")
+print("train_set_y: " + str(train_set_y.shape) + "\n")
+print("test_set_x_orig: " + str(test_set_x_orig.shape) + "\n")
+print("test_set_x: " + str(test_set_x.shape) + "\n")
+print("test_set_x_flatten: " + str(test_set_x_flatten.shape) + "\n")
+print("test_set_y: " + str(test_set_y.shape) + "\n")
+print("\n")
+print("Variables:\n")
+print("m_train: " + str(m_train) + "\n")
+print("m_test: " + str(m_test) + "\n")
+print("num_px: " + str(num_px) + "\n")
+print("\n")
 
 # Function to calculate the sigmoid function
 def sigmoid(z):
@@ -283,29 +283,29 @@ d = model(train_set_x, train_set_y, test_set_x, test_set_y, num_iterations=2000,
 # plt.imshow(test_set_x[:,index].reshape((num_px, num_px, 3)))
 # print ("y = " + str(test_set_y[0,index]) + ", you predicted that it is a \"" + classes[d["Y_prediction_test"][0,index]].decode("utf-8") +  "\" picture.")
 
-# # Plot of the learning curve with costs
-# costs = np.squeeze(d['costs'])
-# plt.plot(costs)
-# plt.ylabel('cost')
-# plt.xlabel('iterations (per hundreds)')
-# plt.title("Learning rate =" + str(d["learning_rate"]))
-# plt.show()
+# Plot of the learning curve with costs
+costs = np.squeeze(d['costs'])
+plt.plot(costs)
+plt.ylabel('cost')
+plt.xlabel('iterations (per hundreds)')
+plt.title("Learning rate =" + str(d["learning_rate"]))
+plt.show()
 
-# # Variation of the learning rate to show the effect thereof on the classification accuracy and training speed
-# learning_rates = [0.01, 0.001, 0.0001]
-# models = {}
-# for i in learning_rates:
-#     print ("learning rate is: " + str(i))
-#     models[str(i)] = model(train_set_x, train_set_y, test_set_x, test_set_y, num_iterations = 1500, learning_rate = i, print_cost = False)
-#     print ('\n' + "-------------------------------------------------------" + '\n')
-# for i in learning_rates:
-#     plt.plot(np.squeeze(models[str(i)]["costs"]), label= str(models[str(i)]["learning_rate"]))
-# plt.ylabel('cost')
-# plt.xlabel('iterations (hundreds)')
-# legend = plt.legend(loc='upper center', shadow=True)
-# frame = legend.get_frame()
-# frame.set_facecolor('0.90')
-# plt.show()
+# Variation of the learning rate to show the effect thereof on the classification accuracy and training speed
+learning_rates = [0.01, 0.001, 0.0001]
+models = {}
+for i in learning_rates:
+    print ("learning rate is: " + str(i))
+    models[str(i)] = model(train_set_x, train_set_y, test_set_x, test_set_y, num_iterations = 1500, learning_rate = i, print_cost = False)
+    print ('\n' + "-------------------------------------------------------" + '\n')
+for i in learning_rates:
+    plt.plot(np.squeeze(models[str(i)]["costs"]), label= str(models[str(i)]["learning_rate"]))
+plt.ylabel('cost')
+plt.xlabel('iterations (hundreds)')
+legend = plt.legend(loc='upper center', shadow=True)
+frame = legend.get_frame()
+frame.set_facecolor('0.90')
+plt.show()
 
 # Testing the trained model on individual images for interest's sake
 for i in range(17):
@@ -319,7 +319,7 @@ for i in range(17):
     temp2 = np.array(temp1.resize((num_px, num_px)))
     temp3 = temp2.reshape((1, num_px*num_px*3))
     my_image = temp3.T
-    #
+    # Predict the label
     my_predicted_image = predict(d["w"], d["b"], my_image)
     plt.imshow(image)
     print("y = " + str(np.squeeze(my_predicted_image)) + ", your algorithm predicts a \"" + classes[int(np.squeeze(my_predicted_image)),].decode("utf-8") +  "\" picture.")
